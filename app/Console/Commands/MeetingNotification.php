@@ -12,23 +12,11 @@ use Illuminate\Support\Facades\Http;
 class MeetingNotification extends Command
 {
     protected $signature = 'meeting:notify';
-   protected $SERVER_API_KEY = "AAAAhu4m0Fo:APA91bHq7v_FN0VfnNIQinAvYRQPgM3Tcja9WFscun07IIkFyPEvi-8GCOuF8Yer113_-Vcx2aBB-HSOMv5nCkdXCJ_a8UVYkMjAZyzRuD4m_U9WSOZIoS2eScSnl3_BbviDHNG5r8j4";
-   protected $fcm_url= "https://fcm.googleapis.com/fcm/send";
-   protected $notify_title="CRM Meeting Reminder!";
-
-    
-
-    protected $credentials;
-
+   
     public function __construct()
     {
         parent::__construct();
-        $this->credentials = [
-            'apiUrl'        => config('envConstant.firebase_device_token_url'),
-            'accessTokenUrl'=> config('envConstant.device_access_token_url'),
-            'clientID'      => config('envConstant.device_access_client_id'),
-            'clientSecret'  => config('envConstant.device_access_client_secret')
-        ];
+        
     }
 
     /**
@@ -57,19 +45,11 @@ class MeetingNotification extends Command
 
         if (count($meetings)>0)
         {
-            // $accessToken=$this->getAccessToken();
+            
             foreach ($meetings as $key=> $meeting)
             {
 
-                // $fcmToken=$this->getDeviceToken($accessToken,$meeting->user_id);
-                // if ($fcmToken !==null)
-                // {
-                //     $deviceToken = $fcmToken['deviceToken'];
-                //     $body ="Hello {$meeting->name}, Your CRM meeting '{$meeting->caption}' is scheduled for {$meeting->start_dt}. Please check your CRM for details.";
-
-
-                //     $this->firebaseFCM($deviceToken,$body);
-                // }
+                
                 if ($meeting->remain_day == 1)
                 {
                     self::sentEmail($meeting);
