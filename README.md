@@ -11,16 +11,17 @@
 
 Steps to run the program locally:
 
-1: Pull the code from the default branch of the repository.
-2: The database credentials can be found in the .env file. Make the database and run the database migration by
+1: Pull the code from the default branch of the repository. <br>
+2: Install composer and also run a composer update to be sure. <br>
+
+3: The database credentials can be found in the .env file. Make the database and run the database migration by
 
 php artisan migrate
 
 php artisan db:seed
 
-3: Install composer and also run a composer update to be sure.
-4: Run the program by the command: php artisan serve
-5: Run the console commands for sending email notification by- php artisan schedule:run
+4: Run the program by the command: php artisan serve <br>
+5: Run the console commands for sending email notification by- php artisan schedule:run <br>
 6: For individual commands:
 
 php artisan email:queue  - sending emails as notifications from the database
