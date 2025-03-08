@@ -28,6 +28,8 @@ php artisan email:queue  - sending emails as notifications from the database
 php artisan meeting:notify - create email notifications for daily reminders of a meeting
 php artisan meeting:reminder - create email notifications for 20 minute(or whichever time has been fixed) reminders of a meeting
 
+N.B: Users with user_type 1x101 are admin users. They can create events and assign others to those meetings. The users with 5x505 user_type are regular users. They can not create or edit events or other regular users. 
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
