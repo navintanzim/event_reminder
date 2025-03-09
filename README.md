@@ -7,7 +7,7 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
 </p>
 
-
+<strong>This app users php 7.3.5 and laravel 8.</strong> <br>
 
 Steps to run the program locally:
 
