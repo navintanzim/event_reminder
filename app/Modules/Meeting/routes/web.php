@@ -12,10 +12,12 @@ Route::group(['module' => 'Meeting', 'middleware' => ['web','auth', 'XssProtecti
     Route::get('/meeting/view/{id}', "MeetingController@viewMeetingData");
     Route::patch('/meeting/update-meeting', "MeetingController@updateMeetingData");
     
-    
+    Route::get('meeting/advance-against-expense', "MeetingController@AAElists");
+    Route::get('meeting/import/sample_file', "MeetingController@sample");
+    Route::patch('meeting/import/upload-excel', "MeetingController@uploadExcel");
+
 
     Route::get('/search-panel', "MeetingController@searchForm");
-
     Route::get('meeting/get-employee-with-user', "MeetingController@getEmployeeUser");
 
 });

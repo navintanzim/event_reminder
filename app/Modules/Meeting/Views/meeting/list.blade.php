@@ -23,9 +23,72 @@
                             <a class="" href="{{ url('/meeting/add-new') }}">
                                 {!! Form::button('<i class="fa fa-plus"></i><b>New Meeting</b>', array('type' => 'button', 'class' => 'btn btn-default')) !!}
                             </a>
+
+                            <button class="btn btn-default pull-right load-modal-btn" id="import_modal_button" style="margin-left: 5px;">
+                                <i class="fa fa-plus"></i> <b>Import Excel Data</b>
+                            </button>
                             @endif
                         </div>
                     </div>
+
+
+                    <div id="aae_modal" class="modal fade" role="dialog">
+                        <div class="modal-dialog modal-lg">
+                            <!-- Modal content-->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title" id="myModalLabel" style="color: black"> Excel upload system</h4>
+                                    <button type="button" class="close" data-dismiss="modal">&times;
+                                    </button>
+                                </div>
+                                    <div class="modal-body" id="aae_modal_body">
+                                        {!! Form::open(array('url' => 'meeting/import/upload-excel','method' => 'patch', 'class' => 'form-horizontal', 'id' => 'html_upload_form',
+                                            'enctype' =>'multipart/form-data', 'files' => 'true')) !!}
+                                        
+                                        <div class="form-group col-md-12 {{$errors->has('file') ? 'has-error' : ''}}" style="color: black;margin-top: 5px;">
+                                            {!! Form::label('file_label','Import xlsx/csv file: ',['class'=>' col-md-6']) !!}
+                                            <div class="col-md-6">
+                                                <span id="file_err" class="text-danger" style="font-size: 8px;"></span>
+                                                {!! Form::file('file', ['class'=>'required',
+                                                'id' => 'file','onchange'=>'htmlupload(this)'])!!}
+                                                <span class="text-danger" style="font-size: 9px; font-weight: bold">[File Format: xlsx/csv ]</span><br/>
+                                                <div style="position:relative;">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-12"  style="background-color:burlywood; margin-bottom: 10px;">
+                                            <div style="margin: 30px">
+                                         Warning! Upload only xlsx or csv file. You can see sample file.
+                                                <a href="{{ url('meeting/import/sample_file') }}" target="_blank">
+                                                    Click Here
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="panel-footer">
+                                            <div class="pull-left">
+                                                <button type="button" class="btn btn-default"
+                                                        data-dismiss="modal">Close
+                                                </button>
+                                            </div>
+                                            <div class="pull-right">
+                                                <button type="submit" disabled
+                                                        class="btn btn-block btn-sm btn-primary" id="upload_btn"><b>Upload</b>
+                                                </button>
+                                            </div>
+
+                                            <div class="clearfix"></div>
+                                        </div>
+                                        {!! Form::close() !!}
+
+                                    </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+
+
                     <div class="clearfix"></div>
                 </div>
                 <!-- /.panel-heading -->
@@ -66,6 +129,29 @@
     <script src="{{ asset("assets/plugins/datepicker-oss/js/bootstrap-datetimepicker.js") }}"></script>
     <script>
         reloadData( '{{url("/meeting/get-meeting-list/")}}');
+
+
+        function htmlupload(input) {
+            if (input.files && input.files[0]) {
+                $("#file_err").html('');
+                var mime_type = input.files[0].type;
+                var fileName = input.files[0].name;
+                var ext = fileName.split('.').pop();
+                var msg = "<h4>File format is not valid. Only xlsx or csv type files are allowed.</h4>";
+                //
+                if ((!(mime_type == 'application/vnd.ms-excel'|| mime_type =='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'))|| ext =="xls") {
+                    $("#file_err").html(msg);
+                    $('#upload_btn').prop("disabled", true);
+                    $("#file").val('');
+                    return false;
+                }else{
+                    $('#upload_btn').prop("disabled", false);
+                }
+                var reader = new FileReader();
+
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
 
         function reloadData(action_url, assigned_to, created_by, name, date_within, created_date, searchData = 0) {
             if (searchData == 0) {
@@ -122,6 +208,23 @@
                     $('#search_area').html(data.html);
                 }
             });
+
+
+
+            $(document).on('click','#import_modal_button',function(e){
+            $('#aae_modal').modal('show');
+        });
+
+        $('#upload_btn').click(function(e){
+            if( $("#fiscal_year").val()==""){
+            e.preventDefault();
+            alert('Please select a fiscal year');
+            }
+        });
+
+        
+
+
         })
     </script>
 @endsection <!--- footer-script--->

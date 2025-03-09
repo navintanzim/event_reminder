@@ -6,8 +6,11 @@ use App\Libraries\CommonFunction;
 use App\Libraries\Encryption;
 use App\Modules\Meeting\Models\MeetingAttendees;
 use App\Http\Controllers\Controller;
+use App\Imports\ReminderImport;
+use App\Models\EmailQueue;
 use App\Modules\Meeting\Models\Meeting;
 use App\Modules\Users\Models\Users;
+use Maatwebsite\Excel\Facades\Excel;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -344,5 +347,153 @@ class MeetingController extends Controller
 
         return json_encode($data);
     }
+
+    public function sample()
+    {
+
+        return view('Meeting::meeting.sample');
+    }
+
+    public function uploadExcel(Request $request)
+    {
+        try {
+
+            DB::beginTransaction();
+
+            $All = [];
+            $html = $request->file('file');
+            $path = 'uploads/finance/';
+            if (!file_exists($path)) {
+                mkdir($path, 0777, true);
+            }
+            $path = 'uploads/finance/' . date('Y') . '/' . date('m') . '/';
+
+            if ($request->hasFile('file')) {
+                $img_file = $html->getClientOriginalName();
+                $mime_type = $html->getClientMimeType();
+                if (($mime_type == 'application/vnd.ms-excel'|| $mime_type =='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet') && $html->getClientOriginalExtension()!="xls"){
+
+                    $reader=Excel::toArray(new ReminderImport, $html);
+                    
+
+                    foreach ($reader as $key=>$row) {
+
+                        for ($i = 0; $i < count($row); $i++) {
+
+                            $AppId ='';
+                            $Caption = '';
+                            $Agenda = '';
+                            $Time = '';
+                            $Location = '';
+                            $Status = '';
+                            $Receiver = '';
+
+                            $AppId =$row[$i][0];
+                            
+                            if (isset($row[$i][1])) {
+                                $Caption = $row[$i][1];
+                            }
+                            if (isset($row[$i][2])) {
+                                $Agenda = $row[$i][2];
+                            }
+                            if (isset($row[$i][3])) {
+                                $Time = $row[$i][3];
+                            }
+                            // $VchrNo = $row[$i][2];
+                            // $VDate = $row[$i][3];
+                            // $VDate='';
+//                             if($i != 0) {
+// //                                $unix_date = ($row[$i][3] - 25569) * 86400;
+//                                 if(is_numeric ($row[$i][3])){
+//                                     $VDate = gmdate("Y-m-d H:i", ($row[$i][3] - 25569) * 86400);
+//                                 }else{
+//                                     $VDate = date("Y-m-d H:i", strtotime($row[$i][3] ) );
+//                                 }
+//                             }
+                            if ( isset($row[$i][4])) {
+                                $Location = $row[$i][4];
+                            }
+                            if ( isset($row[$i][5])) {
+                                $Status = $row[$i][5];
+                            }
+                            if ( isset($row[$i][6])) {
+                                $Receiver = $row[$i][6];
+                            }
+                            
+                            if(!empty($AppId )){
+                                array_push($All, array(
+                                    "AppId" => $AppId,
+                                    "Caption" => $Caption,
+                                    "Agenda" => $Agenda,
+                                    "Time" => $Time,
+                                    "Location" => $Location,
+                                    "Status" => $Status,
+                                    "Receiver" => $Receiver,
+                                ));
+                            }
+                            
+                            
+                        }
+                    }
+                    
+                    $html->move($path, $img_file);
+                    $filepath = $path . '/' . $img_file;
+                } else {
+                    Session::flash('error', 'File must be xlsx or csv format');
+                    return redirect()->back();
+                }
+            }
+            
+            if (count($All) > 1) {
+                
+                foreach ($All as $key => $data) {
+                    if ($key != 0) {
+
+
+                        $data = array_filter($data);
+                        
+                        $appInfo = [];
+                        $receiverInfo = [];
+                        $appInfo = [
+                            'app_id' => $data['AppId'],
+                            'subject' => 'CRM Meeting Information',
+                            'agenda' => $data['Agenda'],
+                            'time' => Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($data['Time']))->format('F j, Y \a\t g:i A'),
+                            'location' => $data['Location'],
+                            'status' => $data['Status']
+                        ];
+                        $userName = Users::where('email', $data['Receiver'])->pluck('name')->first();
+                        $appInfo['name'] = $userName;
+                        $receiverInfo[] = [
+                            'user_email' => $data['Receiver'],
+                            'user_phone' => ''
+                        ];
+                        
+                        
+                            CommonFunction::sendEmailSMS($data['Caption'], $appInfo, $receiverInfo);
+                        
+                    }
+
+                }
+            }
+
+            DB::commit();
+
+            $EmailData = EmailQueue::where('config_id',1)->select(['app_id', 'caption','email_content','email_to','email_subject'])->get();
+            
+            Session::flash('success', 'File has been uploaded successfully.');
+            return view('Meeting::meeting.html_view', compact('EmailData'));
+            
+
+        } catch (\Exception $e) {
+            DB::rollback();
+            // dd($e);
+            Session::flash('error', 'Sorry! Something is Wrong.' . $e->getMessage() . $e->getLine() . $e->getFile());
+            return Redirect::back()->withInput();
+        }
+    }
+
+
+    
 
 }

@@ -71,8 +71,7 @@ $user_name = Auth::user()->name;
                                 - @if(isset(Auth::user()->designation)){!! Auth::user()->designation !!}@endif
                                 {{--                                <small>Member since Nov. 2012</small>--}}
                                 <small>Last login: {{ Session::get('last_login_time') }}</small>
-                                <a href="{{ url('/users/profileinfo#tab_5') }}" class="btn btn-xs bg-navy"><i
-                                            class="fa fa-unlock-alt"></i> &nbsp; Access log</a>
+                                
                             </p>
                         </li>
                         <li class="user-footer">

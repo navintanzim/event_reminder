@@ -30,6 +30,20 @@ php artisan meeting:reminder - create email notifications for 20 minute(or which
 
 N.B: Users with user_type 1x101 are admin users. They can create events and assign others to those meetings. The users with 5x505 user_type are regular users. They can not create or edit events or other regular users. 
 
+User Creation: The admin users can create new users from the Menu : Users. Go to the User List and press the button New User.
+
+Meeting Creation: The admin users can create new meetings from the Menu : Meeting. Go to the Meeting List and press the button New Meeting.
+
+Regular users can only view the meeetings and cant see the user menu at all.
+
+Data Import Feature: <br>
+
+Only Admin users can access this feature. To use this, press the "Import Excel Data" button. This will bring up a modal. You can upload excel files there. A sample file can be viewed through the modal. A file has also been given at : \public\uploads\finance\2025\03\ReminderBook1.xlsx
+
+Once uploaded, a view will show the reminder table data.
+
+Notifications: The notifications come in two forms. Via email. and via an inbuilt cron that checks for updates every minute. the email service requires internet connection, but as long as the app has access to its cache and database, the internal system will work. The internal system is located at the top right corner of the app. A bell icon shows the pending notification. You can also see a full list of the notifications for your account by clicking on it.
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:

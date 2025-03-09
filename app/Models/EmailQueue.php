@@ -12,6 +12,7 @@ class EmailQueue extends Model {
     protected $fillable = array(
         'id',
         'app_id',
+        'caption',
         'email_content',
         'sms_content',
         'email_to',

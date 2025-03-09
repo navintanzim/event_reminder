@@ -118,7 +118,6 @@ class UsersController extends Controller
     }
 
 
-
     /*
      * view individual user from admin panel
      */
@@ -294,28 +293,6 @@ class UsersController extends Controller
                 Users::where('id', $user_id)->update([
                     'password' => Hash::make($password)
                 ]);
-
-//                $body_msg = '<span style="color:#000;text-align:justify;"><b>';
-//                $body_msg .= 'অভিনন্দন!</b><br/><br/>';
-//                $body_msg .= 'Bangladesh Hi-Tech Park Authority (BHTPA) কর্তৃক আপনার পাসওয়ার্ড সফলভাবে পরিবর্তন করা হয়েছে।';
-//                $body_msg .= '<br/>নতুন পাসওয়ার্ড : <code>' . $password . '</code>';
-//                $body_msg .= '</span><br/><br/><br/>';
-//                $body_msg .= 'এটি সিস্টেম হতে সরাসরি প্রদত্ত, যা কেউ জানেন না। তবুও নিরাপত্তার স্বার্থে আপনি সিস্টেমে ঢোকার পর অবশ্যই তা পরিবর্তন করতে হবে।';
-//                $body_msg .= '<br/><br/><br/>ধন্যবাদান্তে,<br/>';
-//                $body_msg .= '<b></b>';
-//
-//                $params = array([
-//                    'emailYes' => '1',
-//                    'emailTemplate' => 'Users::message',
-//                    'emailBody' => $body_msg,
-//                    'emailSubject' => 'Password Reset Information',
-//                    'emailHeader' => 'Password Reset Information',
-//                    'emailAdd' => $email_address,
-//                    'mobileNo' => '01767957180',
-//                    'smsYes' => '0',
-//                    'smsBody' => '',
-//                ]);
-//                CommonFunction::sendMessageFromSystem($params);
 
                 \Session::flash('success', "User's password has been reset successfully! An email has been sent to the user!");
             } else {
