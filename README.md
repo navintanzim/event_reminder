@@ -12,9 +12,9 @@
 Steps to run the program locally:
 
 1: Pull the code from the default branch of the repository. <br>
-2: Install composer and also run a composer update to be sure. <br>
+2: Install composer and also run a composer update to be sure. Also run "php artisan key:generate" to generate the project key.<br>
 
-3: The database credentials can be found in the .env file. Make the database and run the database migration by
+3: The database credentials can be found in the .env example file. Make the database and run the database migration by
 
 php artisan migrate
 
